@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080b13">
+<meta name="description" content="RedStorm v2 — a Redis-inspired Java in-memory database prototype. Explore the project, architecture, supported concepts, and roadmap.">
+<title>RedStorm v2 — Memory at the speed of thought</title>
+<style>
+:root{--bg:#080b13;--panel:#101522;--panel2:#0d111c;--line:rgba(164,184,226,.15);--muted:#9ba8c2;--text:#f3f6ff;--cyan:#6cecff;--blue:#6d83ff;--violet:#b18aff;--green:#7ef0c0;--radius:22px;--max:1180px}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:90px}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-2;background:radial-gradient(ellipse at 75% 0%,rgba(72,88,214,.17),transparent 40%),radial-gradient(ellipse at 15% 40%,rgba(40,190,220,.08),transparent 35%),linear-gradient(180deg,#080b13,#090d17 65%,#080b13)}
+body:after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.15;background-image:linear-gradient(rgba(140,170,220,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(140,170,220,.12) 1px,transparent 1px);background-size:54px 54px;mask-image:linear-gradient(to bottom,black,transparent 75%)}
+a{color:inherit;text-decoration:none}button{font:inherit}.wrap{width:min(var(--max),calc(100% - 42px));margin:auto}.nav{height:76px;position:sticky;top:0;z-index:20;backdrop-filter:blur(18px);background:rgba(8,11,19,.78);border-bottom:1px solid var(--line)}.nav-inner{height:100%;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:-.04em}.brand-mark{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(135deg,var(--cyan),var(--blue) 60%,var(--violet));color:#08101a;font-weight:950;box-shadow:0 0 30px #6cecff36}.brand span{font-size:18px}.brand small{font-size:11px;color:var(--muted);letter-spacing:.14em;margin-left:5px}.nav-links{display:flex;gap:25px;align-items:center;color:#bdc6da;font-size:13px}.nav-links a:hover{color:var(--cyan)}.nav-actions{display:flex;gap:10px}.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:12px 17px;border-radius:12px;border:1px solid var(--line);font-size:13px;font-weight:750;transition:.2s;cursor:pointer}.btn:hover{transform:translateY(-2px);border-color:#6cecff77}.btn-primary{color:#06121a;background:linear-gradient(115deg,var(--cyan),#9cddff);border:0;box-shadow:0 10px 34px #6cecff20}.btn-ghost{background:rgba(255,255,255,.035)}.menu-btn{display:none;background:transparent;color:white;border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.hero{padding:92px 0 74px;position:relative}.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}.eyebrow{display:inline-flex;align-items:center;gap:9px;padding:7px 11px;border:1px solid #6cecff33;background:#6cecff0b;color:#a8f5ff;border-radius:99px;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.pulse{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 13px var(--green)}h1{font-size:clamp(48px,6.5vw,84px);line-height:.99;letter-spacing:-.075em;margin:25px 0 24px;font-weight:850}h1 .gradient{background:linear-gradient(100deg,#f7fbff 0%,#a6eaff 35%,#8d9eff 70%,#c3a6ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent}.hero-copy{max-width:570px;color:#aeb9cf;font-size:17px;line-height:1.85}.hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin:29px 0 27px}.micro{font-size:12px;color:#7f8da8;display:flex;align-items:center;gap:9px;flex-wrap:wrap}.micro b{color:#c8d5ed;font-weight:600}.micro .dot{color:#53627e}.visual{position:relative;min-height:445px;display:grid;place-items:center}.orb-glow{position:absolute;width:340px;height:340px;border-radius:50%;background:#4a6aff22;filter:blur(40px)}.db-scene{position:relative;width:min(100%,480px);aspect-ratio:1/1;display:grid;place-items:center}.ring{position:absolute;border:1px solid #6cecff29;border-radius:50%;transform:rotateX(68deg)}.ring.r1{width:90%;height:90%;animation:spin 26s linear infinite}.ring.r2{width:72%;height:72%;border-color:#a78bfa35;animation:spin 20s linear infinite reverse}.ring.r3{width:55%;height:55%;border-style:dashed;border-color:#7a94ff38;animation:spin 32s linear infinite}.db-icon{position:relative;width:150px;height:180px;filter:drop-shadow(0 0 35px #6cecff25)}.db-icon .side{position:absolute;left:0;right:0;height:52px;border:2px solid #78e9ff;background:linear-gradient(100deg,#142f47,#18214a);border-radius:50%;box-shadow:inset 0 0 24px #6cecff20}.db-icon .side:nth-child(1){top:0;z-index:4}.db-icon .side:nth-child(2){top:42px;z-index:3}.db-icon .side:nth-child(3){top:84px;z-index:2}.db-icon .side:nth-child(4){top:126px;z-index:1}.db-icon:after{content:"";position:absolute;top:23px;bottom:25px;left:1px;right:1px;border-left:2px solid #78e9ff;border-right:2px solid #78e9ff;background:linear-gradient(90deg,#6cecff08,transparent,#b18aff0a)}.node{position:absolute;width:10px;height:10px;border-radius:50%;background:var(--cyan);box-shadow:0 0 20px var(--cyan)}.n1{top:17%;left:20%}.n2{top:25%;right:9%;background:var(--violet);box-shadow:0 0 20px var(--violet)}.n3{bottom:20%;left:11%}.n4{bottom:14%;right:22%;background:#8ea0ff;box-shadow:0 0 20px #8ea0ff}.float-card{position:absolute;background:rgba(12,18,31,.85);border:1px solid #7e9dc62b;border-radius:14px;padding:13px 15px;backdrop-filter:blur(15px);box-shadow:0 20px 60px #0004}.float-card .label{font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:#8091b1}.float-card strong{display:block;font-size:13px;margin-top:4px}.fc1{top:12%;left:-1%}.fc2{right:-1%;top:25%}.fc3{bottom:9%;left:2%}.fc4{bottom:17%;right:0}.tiny-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);margin-right:6px}
+.trustbar{border-block:1px solid var(--line);background:#ffffff03}.trust-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;padding:20px 0}.trust-item{display:flex;align-items:center;gap:10px;color:#a8b5cd;font-size:12px}.trust-item .symbol{color:var(--cyan);font-size:17px}
+section{padding:88px 0}.section-head{max-width:700px;margin-bottom:34px}.kicker{color:var(--cyan);font-size:11px;font-weight:850;letter-spacing:.17em;text-transform:uppercase}.section-head h2{font-size:clamp(32px,4.3vw,52px);line-height:1.08;letter-spacing:-.055em;margin:13px 0}.section-head p{color:var(--muted);margin:0;max-width:640px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{border:1px solid var(--line);background:linear-gradient(145deg,#121a2aaf,#0c111d);border-radius:var(--radius);padding:25px;transition:.25s;position:relative;overflow:hidden}.card:hover{transform:translateY(-5px);border-color:#6cecff52;box-shadow:0 18px 60px #0003}.card-icon{width:43px;height:43px;border:1px solid #6cecff33;border-radius:13px;display:grid;place-items:center;color:var(--cyan);font-size:20px;background:#6cecff0c}.card h3{font-size:17px;letter-spacing:-.025em;margin:19px 0 9px}.card p{font-size:13px;color:var(--muted);margin:0;line-height:1.8}.pill{display:inline-block;font-size:10px;color:#b9c8e3;border:1px solid var(--line);border-radius:7px;padding:4px 7px;margin:15px 5px 0 0}.architecture{display:grid;grid-template-columns:.85fr 1.15fr;gap:20px}.architecture .card{padding:30px}.pipeline{display:flex;flex-direction:column;gap:10px}.pipe-step{display:flex;align-items:center;gap:13px;padding:13px 15px;border:1px solid var(--line);border-radius:12px;background:#0b111e}.pipe-step .num{font:12px ui-monospace,monospace;color:var(--cyan);width:25px}.pipe-step strong{font-size:12px}.pipe-step span:last-child{margin-left:auto;color:#8494b3;font-size:11px}.pipe-line{height:12px;width:1px;background:linear-gradient(var(--cyan),transparent);margin:-10px 0 -10px 28px}.terminal{background:#070a11;border:1px solid #2c3852;border-radius:16px;overflow:hidden;box-shadow:0 20px 65px #0004}.term-top{display:flex;align-items:center;gap:7px;padding:13px 16px;border-bottom:1px solid #202a3e;background:#0c1220}.traffic{width:8px;height:8px;border-radius:50%;background:#fc7f8d}.traffic:nth-child(2){background:#f5c56b}.traffic:nth-child(3){background:#6be3b1}.term-title{font-size:11px;color:#8e9db7;margin-left:7px}.term-body{padding:20px;font:12px/2 ui-monospace,SFMono-Regular,Consolas,monospace;color:#a9b8d4;min-height:235px}.prompt{color:var(--cyan)}.good{color:var(--green)}.violet{color:var(--violet)}.terminal-controls{padding:0 20px 18px;display:flex;gap:10px;flex-wrap:wrap}.terminal-controls button{background:#111a2b;color:#dce7ff;border:1px solid #2c3b58;border-radius:8px;padding:8px 11px;font-size:11px;cursor:pointer}.terminal-controls button:hover{border-color:var(--cyan)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.stat{padding:23px;border-top:1px solid #6cecff45;background:linear-gradient(180deg,#6cecff08,transparent);border-radius:0 0 15px 15px}.stat strong{display:block;font-size:25px;letter-spacing:-.05em}.stat span{font-size:12px;color:var(--muted)}.stat em{font-style:normal;color:var(--cyan)}
+.roadmap{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.road-item{padding:20px;border:1px solid var(--line);border-radius:15px;background:#0e1422}.road-item .phase{font-size:10px;color:var(--cyan);letter-spacing:.14em;text-transform:uppercase}.road-item h3{font-size:14px;margin:10px 0 7px}.road-item p{font-size:12px;color:var(--muted);margin:0}.road-item .state{display:inline-flex;margin-top:14px;font-size:10px;padding:4px 8px;border-radius:7px;background:#6cecff0c;color:#a6f2ff;border:1px solid #6cecff22}
+.faq{max-width:850px;display:grid;gap:10px}.faq details{border:1px solid var(--line);border-radius:13px;background:#0e1421;padding:17px 19px}.faq summary{cursor:pointer;font-weight:700;font-size:13px}.faq details p{color:var(--muted);font-size:13px;margin-bottom:0}
+.cta{border:1px solid #7d9bff30;border-radius:26px;padding:clamp(28px,5vw,54px);background:radial-gradient(ellipse at 100% 0%,#7e70ff1e,transparent 50%),linear-gradient(120deg,#111b30,#0d1320);display:flex;align-items:center;justify-content:space-between;gap:25px}.cta h2{font-size:clamp(29px,4vw,44px);line-height:1.1;letter-spacing:-.055em;margin:12px 0}.cta p{max-width:600px;color:var(--muted);margin:0}.cta-actions{display:flex;gap:10px;flex-wrap:wrap;flex-shrink:0}
+footer{border-top:1px solid var(--line);padding:28px 0;color:#7787a4;font-size:11px}.footer-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}.footer-links{display:flex;gap:17px}.footer-links a:hover{color:var(--cyan)}.disclaimer{font-size:11px;color:#7e8ba4;margin-top:12px;max-width:900px}
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}.reveal.visible{opacity:1;transform:none}
+@keyframes spin{to{transform:rotateX(68deg) rotateZ(360deg)}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.reveal{opacity:1;transform:none}}
+@media(max-width:900px){.nav-links{display:none;position:absolute;top:76px;left:0;right:0;background:#0a0e18;padding:20px 25px;border-bottom:1px solid var(--line);flex-direction:column;align-items:flex-start}.nav-links.open{display:flex}.menu-btn{display:block}.nav-actions .btn-ghost{display:none}.hero{padding-top:65px}.hero-grid{grid-template-columns:1fr;gap:25px}.visual{min-height:390px}.db-scene{max-width:410px}.grid3{grid-template-columns:repeat(2,1fr)}.architecture{grid-template-columns:1fr}.roadmap{grid-template-columns:repeat(2,1fr)}.cta{align-items:flex-start;flex-direction:column}}
+@media(max-width:560px){.wrap{width:min(var(--max),calc(100% - 28px))}.brand small{display:none}.nav-actions .btn-primary{padding:10px 11px}.hero{padding:54px 0 45px}h1{font-size:51px}.hero-copy{font-size:15px}.visual{min-height:320px}.db-scene{max-width:330px}.db-icon{transform:scale(.8)}.float-card{padding:9px 10px}.float-card strong{font-size:11px}.fc1{left:0}.fc2{right:0}.fc3{bottom:4%}.fc4{bottom:10%}section{padding:62px 0}.grid3{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.roadmap{grid-template-columns:1fr}.cta-actions{width:100%}.cta-actions .btn{flex:1}.trust-inner{justify-content:flex-start}.trust-item{width:calc(50% - 10px)}}
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top" aria-label="RedStorm home"><span class="brand-mark">R</span><span>REDSTORM <small>V2</small></span></a>
+    <nav class="nav-links" id="navLinks" aria-label="Main navigation">
+      <a href="#capabilities">Capabilities</a><a href="#architecture">Architecture</a><a href="#console">Console</a><a href="#roadmap">Roadmap</a><a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-ghost" href="https://github.com/arnav1048be25-rgb/RedStorm1234" target="_blank" rel="noopener">GitHub ↗</a>
+      <a class="btn btn-primary" href="#console">Try the demo <span>↘</span></a>
+      <button class="menu-btn" id="menuBtn" aria-label="Open navigation" aria-expanded="false">☰</button>
+    </div>
+  </div>
+</header>
+<main id="top">
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow"><span class="pulse"></span> Java database engineering · v2 prototype</div>
+        <h1><span class="gradient">Memory at the</span><br>speed of thought.</h1>
+        <p class="hero-copy">Meet RedStorm: a Redis-inspired in-memory database prototype built to explore fast data access, TCP networking, RESP2, and persistence — one engineering layer at a time.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="https://github.com/arnav1048be25-rgb/RedStorm1234" target="_blank" rel="noopener">Explore on GitHub <span>↗</span></a>
+          <a class="btn btn-ghost" href="https://github.com/arnav1048be25-rgb/RedStorm1234/blob/main/README.md" target="_blank" rel="noopener">Read documentation <span>→</span></a>
+        </div>
+        <div class="micro"><b>Java</b><span class="dot">/</span><b>TCP + RESP2 concepts</b><span class="dot">/</span><b>Open-source learning project</b></div>
+      </div>
+      <div class="visual" aria-label="Abstract database visualization">
+        <div class="orb-glow"></div><div class="db-scene">
+          <div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div>
+          <span class="node n1"></span><span class="node n2"></span><span class="node n3"></span><span class="node n4"></span>
+          <div class="db-icon"><div class="side"></div><div class="side"></div><div class="side"></div><div class="side"></div></div>
+          <div class="float-card fc1"><div class="label">Protocol</div><strong>RESP2 / TCP</strong></div>
+          <div class="float-card fc2"><div class="label">Engine</div><strong><span class="tiny-dot"></span>Java prototype</strong></div>
+          <div class="float-card fc3"><div class="label">Persistence</div><strong>AOF exploration</strong></div>
+          <div class="float-card fc4"><div class="label">Project status</div><strong>Built to learn</strong></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="trustbar"><div class="wrap trust-inner">
+    <div class="trust-item"><span class="symbol">⌘</span> Single-source Java prototype</div><div class="trust-item"><span class="symbol">◈</span> Redis-inspired data model</div><div class="trust-item"><span class="symbol">⌁</span> TCP server concepts</div><div class="trust-item"><span class="symbol">↻</span> Persistence experiments</div>
+  </div></div>
+  <section id="capabilities"><div class="wrap">
+    <div class="section-head reveal"><div class="kicker">Designed to explore</div><h2>Database fundamentals.<br><span class="gradient">Built layer by layer.</span></h2><p>A hands-on project for understanding the moving parts behind an in-memory data store. Feature support depends on the commands implemented in the source.</p></div>
+    <div class="grid3">
+      <article class="card reveal"><div class="card-icon">⌁</div><h3>Protocol & networking</h3><p>Explore a TCP server and Redis Serialization Protocol (RESP2) request/response patterns.</p><span class="pill">TCP</span><span class="pill">RESP2</span></article>
+      <article class="card reveal"><div class="card-icon">▤</div><h3>Key-value engine</h3><p>Study how keys, values, command dispatch, and data types fit together in a small database engine.</p><span class="pill">Storage</span><span class="pill">Commands</span></article>
+      <article class="card reveal"><div class="card-icon">⌘</div><h3>Data structures</h3><p>Redis-inspired strings, hashes, lists, sets, and sorted sets where implemented in the codebase.</p><span class="pill">Collections</span><span class="pill">Indexes</span></article>
+      <article class="card reveal"><div class="card-icon">◷</div><h3>Expiration</h3><p>Investigate time-to-live behavior and the engineering trade-offs behind expiring keys.</p><span class="pill">TTL concepts</span></article>
+      <article class="card reveal"><div class="card-icon">▣</div><h3>AOF persistence</h3><p>Explore append-only logging and restart replay. Validate durability and crash behavior before relying on it.</p><span class="pill">Persistence</span><span class="pill">Recovery</span></article>
+      <article class="card reveal"><div class="card-icon">⌁</div><h3>Engineering roadmap</h3><p>A base for tests, profiling, concurrency improvements, memory controls, and future distributed systems work.</p><span class="pill">Testing</span><span class="pill">Performance</span></article>
+    </div>
+  </div></section>
+  <section id="architecture"><div class="wrap">
+    <div class="section-head reveal"><div class="kicker">Under the hood</div><h2>A clear path from command<br>to response.</h2><p>A conceptual view of how a request can travel through a database server. It describes the architecture to explore, not a guarantee that every stage is fully implemented.</p></div>
+    <div class="architecture">
+      <div class="card reveal"><div class="card-icon">⌬</div><h3>Request lifecycle</h3><p>Each stage is a distinct engineering concern: parse the request, validate it, execute the operation, then encode a response.</p><div style="margin-top:23px" class="pipeline">
+        <div class="pipe-step"><span class="num">01</span><strong>TCP connection</strong><span>network</span></div><div class="pipe-line"></div>
+        <div class="pipe-step"><span class="num">02</span><strong>RESP2 parsing</strong><span>protocol</span></div><div class="pipe-line"></div>
+        <div class="pipe-step"><span class="num">03</span><strong>Command validation</strong><span>guardrails</span></div><div class="pipe-line"></div>
+        <div class="pipe-step"><span class="num">04</span><strong>Storage operation</strong><span>engine</span></div><div class="pipe-line"></div>
+        <div class="pipe-step"><span class="num">05</span><strong>RESP2 response</strong><span>output</span></div>
+      </div></div>
+      <div class="card reveal" id="console"><div class="card-icon">⌘</div><h3>Interactive protocol concept</h3><p>Choose a demo command to see an example exchange. This browser console is illustrative; it does not connect to your Java server or execute database operations.</p>
+        <div class="terminal" style="margin-top:21px"><div class="term-top"><span class="traffic"></span><span class="traffic"></span><span class="traffic"></span><span class="term-title">redstorm-demo — local illustration</span></div><div class="term-body" id="termOutput" aria-live="polite"><div><span class="prompt">client &gt;</span> PING</div><div><span class="good">server &lt;</span> +PONG</div><br><div style="color:#6e7f9f">Choose a command below to inspect a sample response.</div></div><div class="terminal-controls"><button data-demo="ping">PING</button><button data-demo="set">SET / GET</button><button data-demo="hash">HSET / HGET</button><button data-demo="zset">ZADD / ZRANGE</button></div></div>
+      </div>
+    </div>
+  </div></section>
+  <section id="principles"><div class="wrap">
+    <div class="section-head reveal"><div class="kicker">Engineering, not hype</div><h2>Make the guarantees<br>measurable.</h2><p>We don't publish made-up throughput numbers. The next step is a repeatable test suite that measures behavior on documented hardware and workloads.</p></div>
+    <div class="stats reveal">
+      <div class="stat"><strong>RESP2</strong><span><em>→</em> Protocol target</span></div>
+      <div class="stat"><strong>Java</strong><span><em>→</em> Implementation language</span></div>
+      <div class="stat"><strong>AOF</strong><span><em>→</em> Persistence experiment</span></div>
+      <div class="stat"><strong>Next</strong><span><em>→</em> Compatibility tests</span></div>
+    </div>
+  </div></section>
+  <section id="roadmap"><div class="wrap">
+    <div class="section-head reveal"><div class="kicker">What comes next</div><h2>From prototype to<br><span class="gradient">serious engineering.</span></h2><p>A practical roadmap prioritizing correctness before claims of production readiness.</p></div>
+    <div class="roadmap">
+      <article class="road-item reveal"><div class="phase">Phase 01</div><h3>Correctness first</h3><p>Command tests, protocol edge cases, and reproducible regression tests.</p><span class="state">Priority</span></article>
+      <article class="road-item reveal"><div class="phase">Phase 02</div><h3>Durability</h3><p>Test AOF replay, partial writes, restart recovery, and failure handling.</p><span class="state">Planned</span></article>
+      <article class="road-item reveal"><div class="phase">Phase 03</div><h3>Performance lab</h3><p>Measure latency, throughput, memory use, and concurrent-client behavior.</p><span class="state">Planned</span></article>
+      <article class="road-item reveal"><div class="phase">Phase 04</div><h3>Operational safety</h3><p>Authentication, resource limits, observability, and threat modeling.</p><span class="state">Future</span></article>
+    </div>
+  </div></section>
+  <section id="faq"><div class="wrap">
+    <div class="section-head reveal"><div class="kicker">Quick answers</div><h2>Know what you're using.</h2></div>
+    <div class="faq reveal">
+      <details><summary>Is RedStorm a replacement for Redis?</summary><p>No. It is a Redis-inspired learning prototype and does not claim full Redis command compatibility or production reliability.</p></details>
+      <details><summary>Does this website connect to the database?</summary><p>No. This is a static GitHub Pages landing page. The terminal is a client-side illustration and does not send commands to your Java server.</p></details>
+      <details><summary>Can I contribute?</summary><p>Yes. Explore the source and documentation in the repository, open an issue with a reproducible bug report, or propose a focused improvement.</p></details>
+      <details><summary>Where is the source code?</summary><p>Use the GitHub button to visit the repository. Check the filenames and README there for the current source and setup instructions.</p></details>
+    </div>
+  </div></section>
+  <section><div class="wrap"><div class="cta reveal"><div><div class="kicker">Explore the code</div><h2>Curiosity is the engine.<br>Correctness is the standard.</h2><p>Follow the project, inspect the implementation, and help turn each engineering question into a testable improvement.</p></div><div class="cta-actions"><a class="btn btn-primary" href="https://github.com/arnav1048be25-rgb/RedStorm1234" target="_blank" rel="noopener">Open repository ↗</a><a class="btn btn-ghost" href="https://github.com/arnav1048be25-rgb/RedStorm1234/issues" target="_blank" rel="noopener">Report an issue</a></div></div></div></section>
+</main>
+<footer><div class="wrap footer-inner"><a class="brand" href="#top"><span class="brand-mark">R</span><span>REDSTORM <small>V2</small></span></a><div>Made for learning, experimentation, and database engineering.</div><div class="footer-links"><a href="#capabilities">Capabilities</a><a href="#roadmap">Roadmap</a><a href="https://github.com/arnav1048be25-rgb/RedStorm1234" target="_blank" rel="noopener">GitHub ↗</a></div></div><div class="wrap disclaimer">RedStorm is an independent experimental project inspired by concepts found in in-memory databases. It is not affiliated with or endorsed by Redis Ltd. No performance or production-readiness claims are made on this page.</div></footer>
+<script>
+const menuBtn=document.getElementById('menuBtn');
+const navLinks=document.getElementById('navLinks');
+menuBtn.addEventListener('click',()=>{const open=navLinks.classList.toggle('open');menuBtn.setAttribute('aria-expanded',String(open));menuBtn.textContent=open?'✕':'☰'});
+navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{navLinks.classList.remove('open');menuBtn.setAttribute('aria-expanded','false');menuBtn.textContent='☰'}));
+const demos={
+ ping:{cmd:'PING',lines:[['good','server <','+PONG']]},
+ set:{cmd:'SET greeting "hello"',lines:[['good','server <','+OK'],['prompt','client >','GET greeting'],['good','server <','$5'],['good','','hello']]},
+ hash:{cmd:'HSET user:1 name Arnav',lines:[['good','server <',':1'],['prompt','client >','HGET user:1 name'],['good','server <','$5'],['good','','Arnav']]},
+ zset:{cmd:'ZADD leaderboard 10 alice',lines:[['good','server <',':1'],['prompt','client >','ZRANGE leaderboard 0 -1'],['good','server <','*1'],['good','','alice']]}
+};
+document.querySelectorAll('[data-demo]').forEach(btn=>btn.addEventListener('click',()=>{const d=demos[btn.dataset.demo];const out=document.getElementById('termOutput');out.replaceChildren();const cmd=document.createElement('div');const cp=document.createElement('span');cp.className='prompt';cp.textContent='client > ';cmd.append(cp,document.createTextNode(d.cmd));out.append(cmd);d.lines.forEach(([cls,prefix,content])=>{const row=document.createElement('div');if(prefix){const span=document.createElement('span');span.className=cls;span.textContent=prefix+' ';row.append(span)}else row.style.paddingLeft='12px';row.append(document.createTextNode(content));out.append(row)});const note=document.createElement('div');note.style.cssText='margin-top:14px;color:#7183a3;font-size:10px';note.textContent='Illustrative RESP-style exchange — not connected to a running server.';out.append(note)}));
+const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+</body>
+      </html>
